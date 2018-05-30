@@ -45,7 +45,7 @@ spark_yarn_cluster_get_app_id <- function(config, start_time, rm_webapp) {
   )
 
   while(length(propertyValue) == 0 && commandStart + waitSeconds > Sys.time()) {
-    resourceManagerResponce <- httr::GET(resourceManagerQuery)
+    resourceManagerResponce <- httr::GET(resourceManagerQuery, httr::authenticate("username", "password", "gssnegotiate"))
     yarnApps <- httr::content(resourceManagerResponce)
 
     if (appLookupUseUser) {
@@ -119,7 +119,7 @@ spark_yarn_cluster_while_app <- function(rm_webapp, appId, waitSeconds, conditio
   )
 
   while(commandStart + waitSeconds > Sys.time()) {
-    resourceManagerResponce <- httr::GET(resourceManagerQuery)
+    resourceManagerResponce <- httr::GET(resourceManagerQuery, httr::authenticate("username", "password", "gssnegotiate"))
     yarnResponse <- httr::content(resourceManagerResponce)
 
     if (!condition(yarnResponse$app)) break;
@@ -136,7 +136,7 @@ spark_yarn_cluster_resource_manager_is_online <- function(rm_webapp) {
   )
 
   tryCatch({
-    rmResult <- httr::GET(rmQuery)
+    rmResult <- httr::GET(rmQuery, httr::authenticate("username", "password", "gssnegotiate"))
     if (httr::http_error(rmResult)) {
       warning("Failed to open ", rmQuery, " with status ", httr::status_code(rmResult), ". ")
       FALSE
