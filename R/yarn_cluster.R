@@ -92,7 +92,7 @@ spark_yarn_cluster_get_app_property <- function(rm_webapp, appId, property, erro
     appId
   )
 
-  resourceManagerResponce <- httr::GET(resourceManagerQuery)
+  resourceManagerResponce <- httr::GET(resourceManagerQuery, httr::authenticate("username", "password", "gssnegotiate"))
   yarnApp <- httr::content(resourceManagerResponce)
 
   if (!"app" %in% names(yarnApp) || !property %in% names(yarnApp$app)) {
